@@ -6,7 +6,7 @@ from app.models.movie import Actor, Movie, Genre
 
 router = APIRouter(prefix="/actors", tags=["Actors"])
 
-@router.get("/", response_model=list)
+@router.get("/", response_model=None)
 def get_actors(
     movie_id: int | None = Query(None),
     genre_id: int | None = Query(None),
@@ -19,5 +19,5 @@ def get_actors(
 
     if genre_id:
         query = query.join(Actor.movies).join(Movie.genres).filter(Genre.id == genre_id)
-
+    print(query.distinct().all())
     return query.distinct().all()

@@ -1,11 +1,8 @@
 # Movies Explorer
-explore movies, actors, directors
+Explore movies by genre, actors, directors
 
-#### Initialize alembic (not required if already initialized)
-> poetry run alembic init alembic
+## Build App
+> docker compose build && docker compose up
 
-### Launch backend server
-> poetry install && poetry run python -m main
-
-### Launch frontend server
-> npm start
+### [Movie Explorer Site](http://localhost:3000)
+### [API Docs](http://localhost:8000/docs)
