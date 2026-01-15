@@ -22,6 +22,7 @@ class DirectorOut(BaseModel):
 class MovieOut(BaseModel):
     id: int
     title: str
+    release_year: int
     director: DirectorOut
     genres: List[GenreOut]
     actors: List[ActorOut]

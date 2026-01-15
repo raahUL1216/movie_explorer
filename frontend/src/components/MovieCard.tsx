@@ -3,10 +3,24 @@ import "../styles/card.css";
 
 export default function MovieCard({ movie }: any) {
   return (
-    <div className="card">
-      <h3>{movie.title}</h3>
-      <p className="muted">{movie.release_year}</p>
-      <p className="muted">{movie.director.name}</p>
+    <div className="movie-card">
+      <h3 className="movie-title">
+        {movie.title}
+        <span className="movie-year">({movie.release_year})</span>
+      </h3>
+
+      <p className="movie-director">
+        <strong>Director:</strong> <Link to={`/directors/${movie.director?.id}`}>{movie.director?.name}</Link>
+      </p>
+
+      <div className="movie-genres">
+        {movie.genres.map((genre: any) => (
+          <span key={genre.id} className="genre-badge">
+            {genre.name}
+          </span>
+        ))}
+      </div>
+
       <Link to={`/movies/${movie.id}`}>View details →</Link>
     </div>
   );

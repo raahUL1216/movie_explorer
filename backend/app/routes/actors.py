@@ -19,5 +19,5 @@ def get_actors(
 
     if genre_id:
         query = query.join(Actor.movies).join(Movie.genres).filter(Genre.id == genre_id)
-    print(query.distinct().all())
+
     return query.distinct().all()

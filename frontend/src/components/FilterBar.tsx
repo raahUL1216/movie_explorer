@@ -17,17 +17,17 @@ export default function FilterBar({ onFilter }: any) {
   return (
     <div className="filters">
       <select onChange={e => setFilters({ ...filters, genre_id: e.target.value })}>
-        <option value="">Genre</option>
+        <option value="">Select Genre</option>
         {genres.map(g => <option key={g.id} value={g.id}>{g.name}</option>)}
       </select>
 
       <select onChange={e => setFilters({ ...filters, actor_id: e.target.value })}>
-        <option value="">Actor</option>
+        <option value="">Select Actor</option>
         {actors.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
       </select>
 
       <select onChange={e => setFilters({ ...filters, director_id: e.target.value })}>
-        <option value="">Director</option>
+        <option value="">Select Director</option>
         {directors.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
       </select>
 
