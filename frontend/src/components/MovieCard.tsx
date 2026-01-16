@@ -1,17 +1,34 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../styles/card.css";
 
 export default function MovieCard({ movie }: any) {
+  const navigate = useNavigate();
+
+  const handleCardClick = () => {
+    navigate(`/movies/${movie.id}`);
+  };
+
+  const handleLinkClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
+
   return (
-    <div className="movie-card">
+    <div 
+      className="movie-card" 
+      onClick={handleCardClick} 
+      style={{ cursor: "pointer" }}
+    >
       <h3 className="movie-title">
         {movie.title}
-        <span className="movie-year">({movie.release_year})</span>
+        <span className="movie-year"> ({movie.release_year})</span>
       </h3>
 
       <p className="movie-director">
         <strong>Director: </strong>
-        <Link to={`/directors/${movie.director?.id}`}>
+        <Link 
+          to={`/directors/${movie.director?.id}`} 
+          onClick={handleLinkClick}
+        >
           {movie.director?.name}
         </Link>
       </p>
@@ -20,10 +37,13 @@ export default function MovieCard({ movie }: any) {
         <strong>Cast: </strong>
         {movie.actors.map((a: any, index: number) => (
           <span key={a?.id}>
-            <Link to={`/actors/${a?.id}`}>
+            <Link 
+              to={`/actors/${a?.id}`} 
+              onClick={handleLinkClick}
+            >
               {a?.name}
             </Link>
-            {index < movie.actors.length - 1 ? ' ' : ''}
+            {index < movie.actors.length - 1 ? ', ' : ''}
           </span>
         ))}
       </p>
@@ -35,8 +55,6 @@ export default function MovieCard({ movie }: any) {
           </span>
         ))}
       </div>
-
-      <Link to={`/movies/${movie.id}`}>View details →</Link>
     </div>
   );
 }

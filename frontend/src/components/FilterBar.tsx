@@ -16,14 +16,14 @@ export default function FilterBar({ onFilter, onReady }: any) {
           api.get("/actors"),
           api.get("/directors")
         ]);
-        
         setGenres(resG.data);
         setActors(resA.data);
         setDirectors(resD.data);
       } catch (err) {
-        console.error("Metadata load failed", err);
+        console.error("Failed to load filters", err);
       } finally {
-        onReady();
+        // Signal parent that dropdown data is ready
+        if (onReady) onReady();
       }
     }
     loadMetadata();

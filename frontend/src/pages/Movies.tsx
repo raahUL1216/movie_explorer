@@ -13,6 +13,8 @@ export default function Movies() {
     try {
       const res = await api.get("/movies", { params: filters });
       setMovies(res.data);
+    } catch (err) {
+      console.error("Failed to fetch movies", err);
     } finally {
       setIsLoadingMovies(false);
     }
@@ -22,7 +24,7 @@ export default function Movies() {
     fetchMovies();
   }, []);
 
-  const showLoader = isLoadingMovies || !isMetadataReady;
+  const showLoader = !isMetadataReady || isLoadingMovies;
 
   return (
     <div className="container">
@@ -33,7 +35,7 @@ export default function Movies() {
         onReady={() => setIsMetadataReady(true)} 
       />
 
-      <hr style={{ margin: '20px 0', opacity: 0.2 }} />
+      <hr style={{ margin: '20px 0', opacity: 0.1 }} />
 
       {showLoader ? (
         <div className="loader-wrapper">
