@@ -2,17 +2,32 @@ import { useEffect, useState } from "react";
 import { api } from "../api/client";
 import "../styles/filter.css";
 
-export default function FilterBar({ onFilter }: any) {
+export default function FilterBar({ onFilter, onReady }: any) {
   const [genres, setGenres] = useState<any[]>([]);
   const [actors, setActors] = useState<any[]>([]);
   const [directors, setDirectors] = useState<any[]>([]);
   const [filters, setFilters] = useState<any>({});
 
   useEffect(() => {
-    api.get("/genres").then(r => setGenres(r.data));
-    api.get("/actors").then(r => setActors(r.data));
-    api.get("/directors").then(r => setDirectors(r.data));
-  }, []);
+    async function loadMetadata() {
+      try {
+        const [resG, resA, resD] = await Promise.all([
+          api.get("/genres"),
+          api.get("/actors"),
+          api.get("/directors")
+        ]);
+        
+        setGenres(resG.data);
+        setActors(resA.data);
+        setDirectors(resD.data);
+      } catch (err) {
+        console.error("Metadata load failed", err);
+      } finally {
+        onReady();
+      }
+    }
+    loadMetadata();
+  }, [onReady]);
 
   return (
     <div className="filters">
