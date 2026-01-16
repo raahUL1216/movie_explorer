@@ -26,12 +26,22 @@
 }
 
 .movie-director {
-  font-size: 0.9rem;
+  font-size: 14px;
   color: #374151;
   margin-bottom: 10px;
 }
 
+.movie-actor {
+  font-size: 14px;
+
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
 .movie-genres {
+  font-size: 16px;
+
   display: flex;
   flex-wrap: wrap;
   gap: 6px;

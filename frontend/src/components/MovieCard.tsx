@@ -10,7 +10,22 @@ export default function MovieCard({ movie }: any) {
       </h3>
 
       <p className="movie-director">
-        <strong>Director:</strong> <Link to={`/directors/${movie.director?.id}`}>{movie.director?.name}</Link>
+        <strong>Director: </strong>
+        <Link to={`/directors/${movie.director?.id}`}>
+          {movie.director?.name}
+        </Link>
+      </p>
+
+      <p className="movie-actor">
+        <strong>Cast: </strong>
+        {movie.actors.map((a: any, index: number) => (
+          <span key={a?.id}>
+            <Link to={`/actors/${a?.id}`}>
+              {a?.name}
+            </Link>
+            {index < movie.actors.length - 1 ? ' ' : ''}
+          </span>
+        ))}
       </p>
 
       <div className="movie-genres">
