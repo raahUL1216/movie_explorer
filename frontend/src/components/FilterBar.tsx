@@ -50,6 +50,7 @@ export default function FilterBar({ onFilter, onReady }: any) {
   return (
     <div className="filters">
       <select 
+        id='genre-filter'
         value={filters.genre_id} 
         onChange={e => setFilters({ ...filters, genre_id: e.target.value })}
       >
@@ -58,6 +59,7 @@ export default function FilterBar({ onFilter, onReady }: any) {
       </select>
 
       <select 
+        id='actor-filter'
         value={filters.actor_id} 
         onChange={e => setFilters({ ...filters, actor_id: e.target.value })}
       >
@@ -66,6 +68,7 @@ export default function FilterBar({ onFilter, onReady }: any) {
       </select>
 
       <select 
+        id='director-filter'
         value={filters.director_id} 
         onChange={e => setFilters({ ...filters, director_id: e.target.value })}
       >
