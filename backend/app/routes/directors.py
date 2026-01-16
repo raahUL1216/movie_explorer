@@ -16,7 +16,7 @@ def list_directors(
 
 
 @router.get("/{director_id}")
-def list_directors(
+def get_director(
     director_id: int,
     db: Session = Depends(get_db)
 ):

@@ -9,23 +9,37 @@ ENV POETRY_HOME="/opt/poetry" \
 RUN apt-get update && apt-get install -y curl && \
     curl -sSL https://install.python-poetry.org | python3 -
 
-WORKDIR /app
+# Use /src or /backend as the root so the "app" folder is a CHILD of this directory
+WORKDIR /src
 
-# Install dependencies into a local .venv folder
 COPY pyproject.toml poetry.lock ./
-RUN $POETRY_HOME/bin/poetry install --no-interaction --no-ansi --no-root --only main
+RUN $POETRY_HOME/bin/poetry install --no-interaction --no-ansi --no-root
 
-# --- Stage 2: Final Runtime ---
-FROM python:3.11-slim
+# --- Stage 2: Tester ---
+FROM builder AS tester
 
-WORKDIR /app
-
-# Copy only the installed dependencies from the builder
-COPY --from=builder /app/.venv /app/.venv
+# Copy all files into /src
 COPY . .
 
-# Set environment variables to use the virtualenv
-ENV PATH="/app/.venv/bin:$PATH" \
-    PYTHONUNBUFFERED=1
+# Install everything including dev deps and the root package
+RUN $POETRY_HOME/bin/poetry install --no-interaction --no-ansi
 
-CMD ["python", "-m", "main"]
+# Set PYTHONPATH to the WORKDIR (/src) so that "import app" finds the folder ./app
+ENV PYTHONPATH=/src
+RUN $POETRY_HOME/bin/poetry run pytest -vv -s && touch .tests-passed
+
+# --- Stage 3: Final Runtime ---
+FROM python:3.11-slim
+
+WORKDIR /src
+
+COPY --from=tester /src/.venv /src/.venv
+COPY --from=tester /src/.tests-passed .tests-passed
+COPY . .
+
+ENV PATH="/src/.venv/bin:$PATH" \
+    PYTHONUNBUFFERED=1 \
+    PYTHONPATH=/src
+
+# Run using the module path
+CMD ["python", "-m", "app.main"]
