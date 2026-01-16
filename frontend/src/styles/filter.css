@@ -1,0 +1,93 @@
+.filters {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+
+  margin-bottom: 30px;
+}
+
+.filters select {
+  font-size: 16px;
+  font-weight: 600;
+  padding: 16px 10px;
+  border-radius: 5px;
+  color: white;
+  border: none;
+  
+  min-width: 200px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+
+  background: linear-gradient(113deg, #065865e6, #704b87 100%);
+  }
+
+.filters select option {
+  background-color: #065865
+}
+
+.filters button {
+  font-size: 18px;
+  font-weight: 600;
+  
+  padding: 10px 30px;
+  margin-left: 5px;
+  border-radius: 9999px;
+  
+  cursor: pointer;
+  
+  background: #704b87;
+}
+
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  width: 100%;
+}
+
+.loader-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+  width: 100%;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loader-text {
+  margin-top: 15px;
+  font-family: sans-serif;
+  color: #555;
+  font-weight: 500;
+}
+
+.no-results {
+  text-align: center;
+  grid-column: 1 / -1;
+  padding: 40px;
+  color: #888;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .filters {
+    flex-direction: column;
+    gap: 18px;
+  }
+}

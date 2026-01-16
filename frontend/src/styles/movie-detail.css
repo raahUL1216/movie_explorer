@@ -1,0 +1,150 @@
+/* Reuse core container styles */
+.movie-detail-wrapper {
+	max-width: 900px;
+	margin: 40px auto;
+	padding: 2rem;
+	font-family: 'Inter', sans-serif;
+	color: #2d3436;
+}
+
+.movie-header-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 12px;
+}
+
+.movie-header {
+	text-align: center;
+	margin-bottom: 3rem;
+	padding-bottom: 2rem;
+	border-bottom: 2px solid #f1f2f6;
+}
+
+.movie-badge {
+	display: inline-block;
+	background: #a29bfe;
+	color: white;
+	padding: 4px 12px;
+	border-radius: 20px;
+	font-weight: bold;
+	font-size: 0.9rem;
+	height: 22px;
+}
+
+.movie-header h1 {
+	font-size: 3rem;
+	margin: 15px;
+	letter-spacing: -1px;
+}
+
+.director-link {
+	color: #6c5ce7;
+	text-decoration: none;
+	font-weight: 600;
+}
+
+.director-link:hover {
+	text-decoration: underline;
+}
+
+.genre-tags {
+	display: flex;
+	justify-content: center;
+	gap: 8px;
+	margin-top: 1rem;
+}
+
+.genre-tag {
+	background: #f1f2f6;
+	padding: 5px 15px;
+	border-radius: 15px;
+	font-size: 0.85rem;
+	color: #636e72;
+	font-weight: 500;
+}
+
+/* Reusing list styles from Director Profile */
+.detail-section {
+	margin-bottom: 3rem;
+}
+
+.detail-section h3 {
+	font-size: 1.5rem;
+	margin-bottom: 1.5rem;
+	border-left: 4px solid #6c5ce7;
+	padding-left: 15px;
+}
+
+.movie-grid-container {
+	list-style: none;
+	padding: 0;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	gap: 15px;
+	justify-content: flex-start !important;
+}
+
+.movie-item {
+	background: #ffffff;
+	border-radius: 10px;
+	border: 1px solid #edf2f7;
+	transition: all 0.2s ease;
+}
+
+.movie-item:hover {
+	border-color: #6c5ce7;
+	transform: translateY(-2px);
+}
+
+.movie-card-link {
+	text-decoration: none;
+	color: inherit;
+	padding: 1rem;
+	display: flex;
+	align-items: center;
+}
+
+.movie-bullet {
+	width: 6px;
+	height: 6px;
+	background: #6c5ce7;
+	border-radius: 50%;
+	margin-right: 12px;
+}
+
+/* Review Cards */
+.reviews-list {
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+
+.review-card {
+	background: #f8f9fa;
+	padding: 1.5rem;
+	border-radius: 12px;
+	border-left: 4px solid #dfe6e9;
+}
+
+.review-rating {
+	margin-bottom: 0.5rem;
+	font-size: 0.9rem;
+}
+
+.rating-number {
+	font-weight: bold;
+	color: #2d3436;
+	margin-left: 5px;
+}
+
+.review-comment {
+	font-style: italic;
+	color: #636e72;
+	margin: 0;
+}
+
+.loading-state {
+	text-align: center;
+	padding: 5rem;
+}
