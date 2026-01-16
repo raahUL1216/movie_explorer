@@ -24,7 +24,7 @@ export default function MovieCard({ movie }: any) {
       </h3>
 
       <p className="movie-director">
-        <strong>Director: </strong>
+        <strong>by </strong>
         <Link 
           to={`/directors/${movie.director?.id}`} 
           onClick={handleLinkClick}

@@ -6,8 +6,14 @@ export default function FilterBar({ onFilter, onReady }: any) {
   const [genres, setGenres] = useState<any[]>([]);
   const [actors, setActors] = useState<any[]>([]);
   const [directors, setDirectors] = useState<any[]>([]);
-  const [filters, setFilters] = useState<any>({});
+  
+  const [filters, setFilters] = useState({
+    genre_id: '',
+    actor_id: '',
+    director_id: ''
+  });
 
+  // Load Metadata once
   useEffect(() => {
     async function loadMetadata() {
       try {
@@ -22,31 +28,54 @@ export default function FilterBar({ onFilter, onReady }: any) {
       } catch (err) {
         console.error("Failed to load filters", err);
       } finally {
-        // Signal parent that dropdown data is ready
         if (onReady) onReady();
       }
     }
     loadMetadata();
   }, [onReady]);
 
+  // Debounced Filter Effect
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      onFilter(filters);
+    }, 500);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [filters, onFilter]); // onFilter is now stable from the parent
+
+  const handleClear = () => {
+    setFilters({ genre_id: '', actor_id: '', director_id: '' });
+  };
+
   return (
     <div className="filters">
-      <select onChange={e => setFilters({ ...filters, genre_id: e.target.value })}>
-        <option value="">Select Genre</option>
+      <select 
+        value={filters.genre_id} 
+        onChange={e => setFilters({ ...filters, genre_id: e.target.value })}
+      >
+        <option value="">All Genres</option>
         {genres.map(g => <option key={g.id} value={g.id}>{g.name}</option>)}
       </select>
 
-      <select onChange={e => setFilters({ ...filters, actor_id: e.target.value })}>
-        <option value="">Select Actor</option>
+      <select 
+        value={filters.actor_id} 
+        onChange={e => setFilters({ ...filters, actor_id: e.target.value })}
+      >
+        <option value="">All Actors</option>
         {actors.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
       </select>
 
-      <select onChange={e => setFilters({ ...filters, director_id: e.target.value })}>
-        <option value="">Select Director</option>
+      <select 
+        value={filters.director_id} 
+        onChange={e => setFilters({ ...filters, director_id: e.target.value })}
+      >
+        <option value="">All Directors</option>
         {directors.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
       </select>
 
-      <button onClick={() => onFilter(filters)}>Apply</button>
+      <button onClick={handleClear} className="reset-btn">
+        Reset
+      </button>
     </div>
   );
 }

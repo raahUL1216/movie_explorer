@@ -1,7 +1,7 @@
 .filters {
   display: flex;
   gap: 12px;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 .filters select {

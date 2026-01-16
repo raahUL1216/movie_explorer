@@ -15,7 +15,7 @@ export default function MovieDetail() {
   return (
     <div className="container">
       <h1>{movie.title} ({movie.release_year})</h1>
-      <p><b>Director:</b> 
+      <p><b>Director: </b> 
         <Link to={`/directors/${movie.director?.id}`}>{movie.director?.name}
         </Link>
       </p>
