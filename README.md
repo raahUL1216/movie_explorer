@@ -1,8 +1,11 @@
-# Movies Explorer
+# FilmFlux
 Explore movies by genre, actors, directors
 
-## Build App
-> docker compose build && docker compose up
+## Prerequisites
+- make sure docker is running on your machine.
 
-### [Movie Explorer Site](http://localhost:3000)
+## Build App
+> docker compose build --no-cache && docker compose up
+
+### [Launch FilmFlux](http://localhost:3000)
 ### [API Docs](http://localhost:8000/docs)
