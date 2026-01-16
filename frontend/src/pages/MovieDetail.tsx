@@ -44,7 +44,7 @@ export default function MovieDetail() {
 
       <section className="detail-section">
         <h3>Cast</h3>
-        <ul className="movie-grid">
+        <ul className="movie-grid-container">
           {movie.actors.map((a: any) => (
             <li key={a.id} className="movie-item">
               <Link to={`/actors/${a?.id}`} className="movie-card-link">
