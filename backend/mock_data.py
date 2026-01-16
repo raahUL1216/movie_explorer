@@ -9,125 +9,130 @@ from app.models.movie import (
 
 db = SessionLocal()
 
-# --------------------
-# Genres
-# --------------------
-action = Genre(
-    name="Action",
-    slug="action",
-    description="High-energy films with stunts, chases, and explosions"
-)
+def get_or_create_genre(name, slug, description):
+    genre = db.query(Genre).filter_by(name=name).first()
+    if not genre:
+        genre = Genre(name=name, slug=slug, description=description)
+        db.add(genre)
+        db.flush()  # Push to DB so it's available for relationships
+    return genre
 
-drama = Genre(
-    name="Drama",
-    slug="drama",
-    description="Emotion-driven storytelling with character depth"
-)
+def get_or_create_director(name):
+    director = db.query(Director).filter_by(name=name).first()
+    if not director:
+        director = Director(name=name)
+        db.add(director)
+        db.flush()
+    return director
 
-sci_fi = Genre(
-    name="Science Fiction",
-    slug="science-fiction",
-    description="Futuristic concepts, technology, and speculative science"
-)
+def get_or_create_actor(name):
+    actor = db.query(Actor).filter_by(name=name).first()
+    if not actor:
+        actor = Actor(name=name)
+        db.add(actor)
+        db.flush()
+    return actor
 
-thriller = Genre(
-    name="Thriller",
-    slug="thriller",
-    description="Suspenseful films designed to keep audiences on edge"
-)
+try:
+    # --------------------
+    # 1. Fetch or Create Genres
+    # --------------------
+    action = get_or_create_genre("Action", "action", "High-energy films")
+    sci_fi = get_or_create_genre("Science Fiction", "science-fiction", "Futuristic concepts")
+    drama = get_or_create_genre("Drama", "drama", "Emotion-driven storytelling")
+    thriller = get_or_create_genre("Thriller", "thriller", "Suspenseful films")
+    
+    crime = get_or_create_genre("Crime", "crime", "Criminal acts and justice")
+    mystery = get_or_create_genre("Mystery", "mystery", "Solving puzzles or crimes")
+    biography = get_or_create_genre("Biography", "biography", "Life stories of real people")
 
-# --------------------
-# Actors
-# --------------------
-leo = Actor(name="Leonardo DiCaprio")
-joseph = Actor(name="Joseph Gordon-Levitt")
-ellen = Actor(name="Elliot Page")
-matt = Actor(name="Matt Damon")
+    # --------------------
+    # 2. Fetch or Create Directors
+    # --------------------
+    nolan = get_or_create_director("Christopher Nolan")
+    villeneuve = get_or_create_director("Denis Villeneuve")
+    scorsese = get_or_create_director("Martin Scorsese")
+    oppenheimer_dir = get_or_create_director("Christopher Nolan") # Same as nolan
 
-# --------------------
-# Directors
-# --------------------
-nolan = Director(name="Christopher Nolan")
-villeneuve = Director(name="Denis Villeneuve")
+    # --------------------
+    # 3. Fetch or Create Actors
+    # --------------------
+    leo = get_or_create_actor("Leonardo DiCaprio")
+    matt = get_or_create_actor("Matt Damon")
+    cillian = get_or_create_actor("Cillian Murphy")
+    emily = get_or_create_actor("Emily Blunt")
+    bale = get_or_create_actor("Christian Bale")
+    gosling = get_or_create_actor("Ryan Gosling")
+    ana = get_or_create_actor("Ana de Armas")
 
-# --------------------
-# Movies
-# --------------------
-inception = Movie(
-    title="Inception",
-    release_year=2010,
-    director=nolan,
-    genres=[action, sci_fi, thriller],
-    actors=[leo, joseph, ellen],
-)
+    # --------------------
+    # 4. Define New Movies
+    # --------------------
+    new_movies = [
+        Movie(
+            title="Oppenheimer",
+            release_year=2023,
+            director=nolan,
+            genres=[drama, biography, thriller],
+            actors=[cillian, emily, matt]
+        ),
+        Movie(
+            title="The Dark Knight",
+            release_year=2008,
+            director=nolan,
+            genres=[action, crime, thriller],
+            actors=[bale, get_or_create_actor("Heath Ledger")]
+        ),
+        Movie(
+            title="Blade Runner 2049",
+            release_year=2017,
+            director=villeneuve,
+            genres=[sci_fi, drama, mystery],
+            actors=[gosling, ana, get_or_create_actor("Harrison Ford")]
+        ),
+        Movie(
+            title="The Departed",
+            release_year=2006,
+            director=scorsese,
+            genres=[crime, thriller, drama],
+            actors=[leo, matt, get_or_create_actor("Jack Nicholson")]
+        ),
+        Movie(
+            title="Arrival",
+            release_year=2016,
+            director=villeneuve,
+            genres=[sci_fi, drama, mystery],
+            actors=[get_or_create_actor("Amy Adams"), get_or_create_actor("Jeremy Renner")]
+        ),
+        Movie(
+            title="The Wolf of Wall Street",
+            release_year=2013,
+            director=scorsese,
+            genres=[biography, crime, drama],
+            actors=[leo, get_or_create_actor("Jonah Hill"), get_or_create_actor("Margot Robbie")]
+        )
+    ]
 
-interstellar = Movie(
-    title="Interstellar",
-    release_year=2014,
-    director=nolan,
-    genres=[sci_fi, drama],
-    actors=[leo],
-)
+    db.add_all(new_movies)
+    db.flush() # Get IDs for the movies to link reviews
 
-dune = Movie(
-    title="Dune",
-    release_year=2021,
-    director=villeneuve,
-    genres=[sci_fi, drama],
-    actors=[matt],
-)
+    # --------------------
+    # 5. Add Reviews
+    # --------------------
+    for movie in new_movies:
+        review = MovieReview(
+            movie=movie,
+            reviewer_name="DataBot",
+            rating=5,
+            comment=f"Automated review for {movie.title}."
+        )
+        db.add(review)
 
-# --------------------
-# Reviews
-# --------------------
-reviews = [
-    MovieReview(
-        movie=inception,
-        reviewer_name="Alice",
-        rating=5,
-        comment="Mind-bending and visually stunning."
-    ),
-    MovieReview(
-        movie=inception,
-        reviewer_name="Bob",
-        rating=4,
-        comment="Complex but rewarding experience."
-    ),
-    MovieReview(
-        movie=interstellar,
-        reviewer_name="Charlie",
-        rating=5,
-        comment="Emotional and scientifically ambitious."
-    ),
-    MovieReview(
-        movie=dune,
-        reviewer_name="Dana",
-        rating=4,
-        comment="Epic world-building and visuals."
-    ),
-]
+    db.commit()
+    print("✅ 6 new movies (and associated data) verified and inserted successfully.")
 
-# --------------------
-# Persist Data
-# --------------------
-db.add_all([
-    action,
-    drama,
-    sci_fi,
-    thriller,
-    leo,
-    joseph,
-    ellen,
-    matt,
-    nolan,
-    villeneuve,
-    inception,
-    interstellar,
-    dune,
-    *reviews,
-])
-
-db.commit()
-db.close()
-
-print("✅ Mock data inserted successfully.")
+except Exception as e:
+    db.rollback()
+    print(f"❌ An error occurred: {e}")
+finally:
+    db.close()
