@@ -6,7 +6,7 @@
   transition: transform 0.2s, box-shadow 0.2s;
 
   overflow: hidden;
-  background: #fff;
+  background: #e9e6eb;
 }
 
 .movie-card:hover {
@@ -15,17 +15,24 @@
 }
 
 .movie-card a {
-  background: #eef2ff;
-  color: #4338ca;
   font-size: 14px;
+  font-weight: 500;
   padding: 4px 10px;
   margin: 5px 0;
   border-radius: 999px;
-  font-weight: 500;
-
+  
   color: #3b82f6;
   position: relative;
   z-index: 2; /* Ensures links stay on top of the clickable card */
+}
+
+.movie-director a {
+  font-size: 15px;
+  background: #d6d7db;
+}
+
+.movie-actor a{
+  background: #dedee1;
 }
 
 .movie-card a:hover {
@@ -38,7 +45,7 @@
 }
 
 .movie-title {
-  font-size: 1.1rem;
+  font-size: 21px;
   font-weight: 600;
   margin-bottom: 6px;
   color: #1f2937;
@@ -53,8 +60,12 @@
 
 .movie-director {
   font-size: 14px;
-  color: #374151;
-  margin-bottom: 10px;
+  color: #4f5b71;
+  margin: 16px 0px;
+}
+
+.movie-director strong {
+  font-weight: 700;
 }
 
 .movie-actor {
@@ -63,6 +74,17 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+
+  margin-top: 22px;
+}
+
+.movie-actor strong { 
+  color: #4f5b71;
+  font-weight: 600;
+}
+
+.movie-actor span {
+  margin-bottom: 6px;
 }
 
 .movie-genres {
@@ -72,13 +94,13 @@
   flex-wrap: wrap;
   gap: 6px;
 
-  margin: 16px 0px;
+  margin-top: 14px;
 }
 
 .genre-badge {
   background: #eef2ff;
   color: #4338ca;
-  font-size: 0.75rem;
+  font-size: 13px;
   padding: 4px 10px;
   margin-top: 7px;
   border-radius: 999px;

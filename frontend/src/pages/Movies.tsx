@@ -37,7 +37,7 @@ export default function Movies() {
 
   return (
     <div className="container">
-      <h1>🎬 Movie Explorer</h1>
+      <h1>🎬 FilmFlux</h1>
       <FilterBar 
         onFilter={fetchMovies} 
         onReady={handleMetadataReady} 

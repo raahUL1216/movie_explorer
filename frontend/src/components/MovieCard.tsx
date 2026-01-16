@@ -34,8 +34,8 @@ export default function MovieCard({ movie }: any) {
       </p>
 
       <p className="movie-actor">
-        <strong>Cast: </strong>
-        {movie.actors.map((a: any, index: number) => (
+        <strong>Cast </strong>
+        {movie.actors.map((a: any) => (
           <span key={a?.id}>
             <Link 
               to={`/actors/${a?.id}`} 
@@ -43,7 +43,6 @@ export default function MovieCard({ movie }: any) {
             >
               {a?.name}
             </Link>
-            {index < movie.actors.length - 1 ? ', ' : ''}
           </span>
         ))}
       </p>

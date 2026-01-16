@@ -9,24 +9,32 @@
   font-weight: 600;
   padding: 16px 10px;
   border-radius: 5px;
-  background-color: #324d85;
   color: white;
   border: none;
-
-  width: 200px;
+  
+  min-width: 200px;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+
+  background: linear-gradient(113deg, #065865, #704b87 100%);
+}
+
+.filters select option {
+  background-color: #065865
 }
 
 .filters button {
-  font-size: 16px;
+  font-size: 18px;
+  font-weight: 600;
+  
   padding: 10px 30px;
+  margin-left: 5px;
   border-radius: 9999px;
-  border: none;
+  
   cursor: pointer;
-  color: white;
-  background: linear-gradient(85deg, #21c0d9, #640a9b 100%);
+  
+  background: #704b87;
 }
 
 .loader-container {
@@ -73,4 +81,11 @@
   padding: 40px;
   color: #888;
   font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .filters {
+    flex-direction: column;
+    gap: 18px;
+  }
 }
