@@ -1,21 +1,32 @@
-# Use the requested Node 22.0.0 alpine version
+# Build Stage
 FROM node:22.0.0-alpine AS build
 
 WORKDIR /app
+
+# Install dependencies first (better caching)
 COPY package.json package-lock.json ./
 RUN npm install
+
+# Copy source code
 COPY . .
 
-# RUN ES LINT: This acts as a quality gate
+# Quality Gate 1: Linting
 RUN npm run lint
+
+# Quality Gate 2: Running Vitest in CI mode
+RUN npm run test
 
 RUN npm run build
 
+# Production Stage
 FROM nginx:alpine
-# Copy the build output
+
+# Copy the build output from the build stage
 COPY --from=build /app/dist /usr/share/nginx/html
 
-# ADD THIS: Copy your custom nginx config to prevent 404s on refresh
+# Copy custom nginx config to handle React Router client-side routing
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

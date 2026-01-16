@@ -9,7 +9,6 @@ ENV POETRY_HOME="/opt/poetry" \
 RUN apt-get update && apt-get install -y curl && \
     curl -sSL https://install.python-poetry.org | python3 -
 
-# Use /src or /backend as the root so the "app" folder is a CHILD of this directory
 WORKDIR /src
 
 COPY pyproject.toml poetry.lock ./
@@ -24,7 +23,6 @@ COPY . .
 # Install everything including dev deps and the root package
 RUN $POETRY_HOME/bin/poetry install --no-interaction --no-ansi
 
-# Set PYTHONPATH to the WORKDIR (/src) so that "import app" finds the folder ./app
 ENV PYTHONPATH=/src
 RUN $POETRY_HOME/bin/poetry run pytest -vv -s && touch .tests-passed
 
