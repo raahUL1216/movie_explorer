@@ -13,7 +13,13 @@ export default function App() {
           <Link to="/" className="logo-link">
             <h1>🎬 FilmFlux</h1>
           </Link>
+          <div className="home-button-container">
+            <Link to="/">
+              <button type="button">Home</button>
+            </Link>
+          </div>
         </div>
+        
       </header>
 
       <main>

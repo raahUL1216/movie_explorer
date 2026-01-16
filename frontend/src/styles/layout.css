@@ -18,3 +18,30 @@ body {
 .muted {
   color: #ffffffde;
 }
+
+.home-button-container {
+  margin-top: 8px;
+}
+
+.home-button-container button {
+  font-size: 18px;
+  font-weight: 600;
+  padding: 10px 30px;
+  margin-left: 5px;
+  border-radius: 9999px;
+  cursor: pointer;
+  background: #226d79;
+}
+
+@media (max-width: 768px) {
+  h1 {
+    margin: 20px 0px;
+  }
+
+  .header-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+  }
+}

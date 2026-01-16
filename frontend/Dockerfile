@@ -5,6 +5,10 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm install
 COPY . .
+
+# RUN ES LINT: This acts as a quality gate
+RUN npm run lint
+
 RUN npm run build
 
 FROM nginx:alpine

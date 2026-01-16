@@ -1,14 +1,15 @@
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { api } from "../api/client";
+import type { ActorProfileData, MovieSummary } from "../models/movie";
 import "../styles/profile.css";
 
 export default function ActorProfile() {
-  const { id } = useParams();
-  const [actor, setActor] = useState<any>(null);
+  const { id } = useParams<{ id: string }>();
+  const [actor, setActor] = useState<ActorProfileData | null>(null);
 
   useEffect(() => {
-    api.get(`/actors/${id}`).then((r) => setActor(r.data));
+    api.get<ActorProfileData>(`/actors/${id}`).then((r) => setActor(r.data));
   }, [id]);
 
   if (!actor) {
@@ -31,7 +32,7 @@ export default function ActorProfile() {
 
       <section className="movie-list-section">
         <ul className="movie-grid">
-          {actor.movies.map((m: any) => (
+          {actor.movies.map((m: MovieSummary) => (
             <li key={m.id} className="movie-item">
               <Link to={`/movies/${m.id}`} className="movie-card-link">
                 <span className="movie-bullet"></span>

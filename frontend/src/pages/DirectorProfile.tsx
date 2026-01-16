@@ -1,14 +1,21 @@
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { api } from "../api/client";
+import type { DirectorProfileData, MovieSummary } from "../models/movie";
 import "../styles/profile.css";
 
 export default function DirectorProfile() {
-  const { id } = useParams();
-  const [director, setDirector] = useState<any>(null);
+  // Explicitly type the params ID
+  const { id } = useParams<{ id: string }>();
+  
+  // Replace 'any' with the specific interface or null
+  const [director, setDirector] = useState<DirectorProfileData | null>(null);
 
   useEffect(() => {
-    api.get(`/directors/${id}`).then((r) => setDirector(r.data));
+    // Provide the type to the API client for response validation
+    api.get<DirectorProfileData>(`/directors/${id}`)
+      .then((r) => setDirector(r.data))
+      .catch((err) => console.error("Failed to load director", err));
   }, [id]);
 
   if (!director) {
@@ -31,7 +38,7 @@ export default function DirectorProfile() {
 
       <section className="movie-list-section">
         <ul className="movie-grid">
-          {director.movies.map((m: any) => (
+          {director.movies.map((m: MovieSummary) => (
             <li key={m.id} className="movie-item">
               <Link to={`/movies/${m.id}`} className="movie-card-link">
                 <span className="movie-bullet"></span>

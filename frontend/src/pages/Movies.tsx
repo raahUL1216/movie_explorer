@@ -1,30 +1,31 @@
 import { useEffect, useState, useCallback } from "react";
 import { api } from "../api/client";
+import type { Movie, MovieFilters } from "../models/movie";
 import MovieCard from "../components/MovieCard";
 import FilterBar from "../components/FilterBar";
-import { Link } from "react-router-dom";
 
 export default function Movies() {
-  const [movies, setMovies] = useState<any[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
   const [isLoadingMovies, setIsLoadingMovies] = useState(true);
   const [isMetadataReady, setIsMetadataReady] = useState(false);
 
-  // Use useCallback to prevent the function from being recreated every render
-  const fetchMovies = useCallback(async (filters = {}) => {
+  const fetchMovies = useCallback(async (filters: Partial<MovieFilters> = {}) => {
     setIsLoadingMovies(true);
+    
+    // Filter out empty strings from query params
     const updatedFilters = Object.fromEntries(
-      Object.entries(filters).filter(([_, value]) => value !== '')
+      Object.entries(filters).filter(([, value]) => value !== '')
     );
 
     try {
-      const res = await api.get("/movies", { params: updatedFilters });
+      const res = await api.get<Movie[]>("/movies", { params: updatedFilters });
       setMovies(res.data);
     } catch (err) {
       console.error("Failed to fetch movies", err);
     } finally {
       setIsLoadingMovies(false);
     }
-  }, []); // Empty array because api is static
+  }, []);
 
   const handleMetadataReady = useCallback(() => {
     setIsMetadataReady(true);
@@ -32,7 +33,7 @@ export default function Movies() {
 
   useEffect(() => {
     fetchMovies();
-  }, [fetchMovies]); // Now safe to include in dependencies
+  }, [fetchMovies]);
 
   const showLoader = !isMetadataReady || isLoadingMovies;
 

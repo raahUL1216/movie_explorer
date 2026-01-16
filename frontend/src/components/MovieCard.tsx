@@ -1,7 +1,9 @@
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
+import type { Entity, MovieCardProps } from "../models/movie";
 import "../styles/card.css";
 
-export default function MovieCard({ movie }: any) {
+export default function MovieCard({ movie }: MovieCardProps) {
   const navigate = useNavigate();
 
   const handleCardClick = () => {
@@ -35,7 +37,7 @@ export default function MovieCard({ movie }: any) {
 
       <p className="movie-actor">
         <strong>Cast </strong>
-        {movie.actors.map((a: any) => (
+        {movie.actors.map((a: Entity) => (
           <span key={a?.id}>
             <Link 
               to={`/actors/${a?.id}`} 
@@ -48,7 +50,7 @@ export default function MovieCard({ movie }: any) {
       </p>
 
       <div className="movie-genres">
-        {movie.genres.map((genre: any) => (
+        {movie.genres.map((genre: Entity) => (
           <span key={genre.id} className="genre-badge">
             {genre.name}
           </span>

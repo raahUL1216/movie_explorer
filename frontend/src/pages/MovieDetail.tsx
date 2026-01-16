@@ -1,14 +1,15 @@
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { api } from "../api/client";
+import type { Movie, Entity, Review } from "../models/movie";
 import "../styles/movie-detail.css";
 
 export default function MovieDetail() {
-  const { id } = useParams();
-  const [movie, setMovie] = useState<any>(null);
+  const { id } = useParams<{ id: string }>();
+  const [movie, setMovie] = useState<Movie | null>(null);
 
   useEffect(() => {
-    api.get(`/movies/${id}`).then((r) => setMovie(r.data));
+    api.get<Movie>(`/movies/${id}`).then((r) => setMovie(r.data));
   }, [id]);
 
   if (!movie) {
@@ -35,7 +36,7 @@ export default function MovieDetail() {
             </Link>
           </p>
           <div className="genre-tags">
-            {movie.genres.map((g: any) => (
+            {movie.genres.map((g: Entity) => (
               <span key={g.id} className="genre-tag">{g.name}</span>
             ))}
           </div>
@@ -45,7 +46,7 @@ export default function MovieDetail() {
       <section className="detail-section">
         <h3>Cast</h3>
         <ul className="movie-grid-container">
-          {movie.actors.map((a: any) => (
+          {movie.actors.map((a: Entity) => (
             <li key={a.id} className="movie-item">
               <Link to={`/actors/${a?.id}`} className="movie-card-link">
                 <span className="movie-bullet"></span>
@@ -59,7 +60,7 @@ export default function MovieDetail() {
       <section className="detail-section">
         <h3>Reviews</h3>
         <div className="reviews-list">
-          {movie.reviews.map((r: any) => (
+          {movie.reviews.map((r: Review) => (
             <div key={r.id} className="review-card">
               <div className="review-rating">
                 {"⭐".repeat(r.rating)} <span className="rating-number">{r.rating}/5</span>

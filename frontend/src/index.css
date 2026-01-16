@@ -32,10 +32,18 @@ h1 {
   color: #226d79;
   font-size: 3.2em;
   line-height: 1.1;
+
+  margin: 50px 0px;
 }
 
 .header-container {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-evenly;
+
   padding: 0px 7px;
+  margin-bottom: 18px;
 }
 
 button {
