@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { api } from "../api/client";
 import MovieCard from "../components/MovieCard";
 import FilterBar from "../components/FilterBar";
+import { Link } from "react-router-dom";
 
 export default function Movies() {
   const [movies, setMovies] = useState<any[]>([]);
@@ -37,7 +38,6 @@ export default function Movies() {
 
   return (
     <div className="container">
-      <h1>🎬 FilmFlux</h1>
       <FilterBar 
         onFilter={fetchMovies} 
         onReady={handleMetadataReady} 
