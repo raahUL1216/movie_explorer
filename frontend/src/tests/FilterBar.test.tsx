@@ -1,59 +1,60 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach, type Mock } from "vitest";
 import FilterBar from "../components/FilterBar";
-import { api } from "../api/client";
-import type { Entity } from "../models/movie";
-
-// Mock the API client
-vi.mock("../api/client", () => ({
-  api: { get: vi.fn() }
-}));
 
 describe("FilterBar", () => {
-  const mockOnFilter = vi.fn();
-  const mockData: Entity[] = [{ id: 1, name: "Test Item" }];
+  const mockOnFilter = vi.fn() as Mock;
+  const mockOnReady = vi.fn() as Mock;
 
   beforeEach(() => {
     vi.clearAllMocks();
-    // Use the Mock type imported from vitest
-    (api.get as Mock).mockResolvedValue({ data: mockData });
+    vi.useFakeTimers(); // Needed to handle the 500ms debounce precisely
   });
 
-  it("fetches metadata on mount", async () => {
-    render(<FilterBar onFilter={mockOnFilter} />);
-    
-    await waitFor(() => {
-      expect(api.get).toHaveBeenCalledWith("/genres");
-      expect(api.get).toHaveBeenCalledWith("/actors");
-      expect(api.get).toHaveBeenCalledWith("/directors");
-    });
+  it("calls onReady on mount", () => {
+    render(<FilterBar onFilter={mockOnFilter} onReady={mockOnReady} />);
+    expect(mockOnReady).toHaveBeenCalledTimes(1);
   });
 
-  it("triggers onFilter after debounce when selection changes", async () => {
+  it("updates search value and triggers onFilter after debounce", async () => {
     render(<FilterBar onFilter={mockOnFilter} />);
     
-    const select = await screen.findByDisplayValue("All Genres");
-    fireEvent.change(select, { target: { value: "1" } });
+    const input = screen.getByPlaceholderText(/Search by movie name/i) as HTMLInputElement;
+    
+    // Simulate typing
+    fireEvent.change(input, { target: { value: "Inception" } });
+    expect(input.value).toBe("Inception");
 
-    await waitFor(() => {
-      expect(mockOnFilter).toHaveBeenCalledWith(expect.objectContaining({ 
-        genre_id: "1" 
-      }));
-    }, { timeout: 1000 });
+    // Fast-forward time by 500ms
+    vi.advanceTimersByTime(500);
+
+    expect(mockOnFilter).toHaveBeenCalledWith("Inception");
   });
 
-  it("resets filters when Reset is clicked", async () => {
+  it("clears search text and calls onFilter when clear icon is clicked", () => {
     render(<FilterBar onFilter={mockOnFilter} />);
-    const button = screen.getByRole("button", { name: /reset/i });
     
-    fireEvent.click(button);
+    const input = screen.getByPlaceholderText(/Search by movie name/i) as HTMLInputElement;
+    fireEvent.change(input, { target: { value: "Tenet" } });
     
-    await waitFor(() => {
-      expect(mockOnFilter).toHaveBeenCalledWith({ 
-        genre_id: '', 
-        actor_id: '', 
-        director_id: '' 
-      });
-    });
+    // Find the clear icon by its aria-label
+    // Note: Since it's an SVG, we target via aria-label provided in your HTML
+    const clearBtn = screen.getByLabelText("Clear search");
+    
+    fireEvent.click(clearBtn);
+
+    expect(input.value).toBe("");
+    expect(mockOnFilter).toHaveBeenCalledWith(undefined);
+  });
+
+  it("trims whitespace from search term", () => {
+    render(<FilterBar onFilter={mockOnFilter} />);
+    
+    const input = screen.getByPlaceholderText(/Search by movie name/i);
+    fireEvent.change(input, { target: { value: "  Batman  " } });
+
+    vi.advanceTimersByTime(500);
+
+    expect(mockOnFilter).toHaveBeenCalledWith("Batman");
   });
 });

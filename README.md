@@ -5,9 +5,10 @@ Explore movies by genre, actors, directors
 - make sure docker is running on your machine.
 
 - **Backend**: Add the provided `.env` file to `backend/.env` (used for the remote database connection).
-- **Frontend**: Create a `.env` file in `frontend/.env` and add:
+- **Frontend**: Create a `.env` file in `frontend/.env` and add VITE_API_URL:
   ```env
   VITE_API_URL=http://localhost:8000
+
 ## Build App
 > docker compose build --no-cache
 
