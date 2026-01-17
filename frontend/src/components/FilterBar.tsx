@@ -1,83 +1,68 @@
 import { useEffect, useState } from "react";
-import { api } from "../api/client";
-import type { Entity, MovieFilters, FilterBarProps } from "../models/movie";
 import "../styles/filter.css";
 
+export type FilterBarProps = {
+  onFilter: (searchTerm?: string) => void;
+  onReady?: () => void;
+};
+
 export default function FilterBar({ onFilter, onReady }: FilterBarProps) {
-  const [genres, setGenres] = useState<Entity[]>([]);
-  const [actors, setActors] = useState<Entity[]>([]);
-  const [directors, setDirectors] = useState<Entity[]>([]);
-  
-  const [filters, setFilters] = useState<MovieFilters>({
-    genre_id: '',
-    actor_id: '',
-    director_id: ''
-  });
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
-    async function loadMetadata() {
-      try {
-        const [resG, resA, resD] = await Promise.all([
-          api.get<Entity[]>("/genres"),
-          api.get<Entity[]>("/actors"),
-          api.get<Entity[]>("/directors")
-        ]);
-        setGenres(resG.data);
-        setActors(resA.data);
-        setDirectors(resD.data);
-      } catch (err) {
-        console.error("Failed to load filters", err);
-      } finally {
-        if (onReady) onReady();
-      }
-    }
-    loadMetadata();
+    if (onReady) onReady();
   }, [onReady]);
 
   useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      onFilter(filters);
+    const debounce = setTimeout(() => {
+      onFilter(search.trim() || undefined);
     }, 500);
 
-    return () => clearTimeout(delayDebounceFn);
-  }, [filters, onFilter]);
+    return () => clearTimeout(debounce);
+  }, [search, onFilter]);
 
   const handleClear = () => {
-    setFilters({ genre_id: '', actor_id: '', director_id: '' });
+    setSearch("");
   };
 
   return (
     <div className="filters">
-      <select 
-        id='genre-filter'
-        value={filters.genre_id} 
-        onChange={e => setFilters({ ...filters, genre_id: e.target.value })}
-      >
-        <option value="">All Genres</option>
-        {genres.map(g => <option key={g.id} value={g.id.toString()}>{g.name}</option>)}
-      </select>
+      <div className="search-wrapper search-input-wrapper">
+        <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 512 512" className="search-input-icon" tabIndex={0} data-testid="search-input-icon" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+          <path d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"></path>
+        </svg>
+        
+        <input
+          type="text"
+          value={search}
+          placeholder="Search by movie name, cast, director..."
+          onChange={e => setSearch(e.target.value)}
+          aria-label="Search movies"
+          name="movieSearchText"
+          className="search-input"
+        />
 
-      <select 
-        id='actor-filter'
-        value={filters.actor_id} 
-        onChange={e => setFilters({ ...filters, actor_id: e.target.value })}
-      >
-        <option value="">All Actors</option>
-        {actors.map(a => <option key={a.id} value={a.id.toString()}>{a.name}</option>)}
-      </select>
-
-      <select 
-        id='director-filter'
-        value={filters.director_id} 
-        onChange={e => setFilters({ ...filters, director_id: e.target.value })}
-      >
-        <option value="">All Directors</option>
-        {directors.map(d => <option key={d.id} value={d.id.toString()}>{d.name}</option>)}
-      </select>
-
-      <button onClick={handleClear} className="reset-btn">
-        Reset
-      </button>
+        {search && (
+          <svg onClick={handleClear}
+            stroke="currentColor" 
+            fill="currentColor" 
+            strokeWidth="0" 
+            viewBox="0 0 24 24" 
+            className="clear-input-icon" 
+            tabIndex={0} 
+            aria-label="Clear search" 
+            height="1em" 
+            width="1em" 
+            xmlns="http://www.w3.org/2000/svg"
+            style={{ cursor: 'pointer' }}
+          >
+            <g>
+              <path fill="none" d="M0 0h24v24H0z"></path>
+              <path d="M12 10.243l6.364-6.364 1.768 1.768-6.364 6.364 6.364 6.364-1.768 1.768-6.364-6.364-6.364 6.364-1.768-1.768 6.364-6.364-6.364-6.364 1.768-1.768z"></path>
+            </g>
+          </svg>
+        )}
+      </div>
     </div>
   );
 }

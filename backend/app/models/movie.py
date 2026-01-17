@@ -1,4 +1,6 @@
-from sqlalchemy import Table, Column, Integer, String, Text, ForeignKey
+from sqlalchemy import (
+    Table, Column, Integer, String, Text, ForeignKey, Index
+)
 from sqlalchemy.orm import relationship
 from app.database.db import Base
 
@@ -21,10 +23,10 @@ class Movie(Base):
     __tablename__ = "movies"
 
     id = Column(Integer, primary_key=True)
-    title = Column(String, nullable=False)
+    title = Column(String, nullable=False, index=True)
     release_year = Column(Integer, nullable=False)
 
-    director_id = Column(Integer, ForeignKey("directors.id"))
+    director_id = Column(Integer, ForeignKey("directors.id"), index=True)
 
     director = relationship("Director", back_populates="movies")
     genres = relationship("Genre", secondary=movie_genres, back_populates="movies")
@@ -35,7 +37,7 @@ class Actor(Base):
     __tablename__ = "actors"
 
     id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
+    name = Column(String, nullable=False, index=True)
 
     movies = relationship("Movie", secondary=movie_actors, back_populates="actors")
 
@@ -43,16 +45,17 @@ class Genre(Base):
     __tablename__ = "genres"
 
     id = Column(Integer, primary_key=True)
-    name = Column(String, unique=True, nullable=False)
-    description = Column(String(255), nullable=True)    
+    name = Column(String, unique=True, nullable=False, index=True)
+    description = Column(String(255), nullable=True)
     slug = Column(String(50), unique=True, index=True)
+
     movies = relationship("Movie", secondary=movie_genres, back_populates="genres")
 
 class Director(Base):
     __tablename__ = "directors"
 
     id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
+    name = Column(String, nullable=False, index=True)
 
     movies = relationship("Movie", back_populates="director")
 
@@ -60,9 +63,9 @@ class MovieReview(Base):
     __tablename__ = "movie_reviews"
 
     id = Column(Integer, primary_key=True)
-    movie_id = Column(Integer, ForeignKey("movies.id"), nullable=False)
+    movie_id = Column(Integer, ForeignKey("movies.id"), nullable=False, index=True)
     reviewer_name = Column(String, nullable=False)
-    rating = Column(Integer, nullable=False)  # 1–5
+    rating = Column(Integer, nullable=False)
     comment = Column(Text)
 
     movie = relationship("Movie", back_populates="reviews")

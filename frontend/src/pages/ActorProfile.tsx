@@ -31,6 +31,9 @@ export default function ActorProfile() {
       </header>
 
       <section className="movie-list-section">
+        <div className="movie-list-title">
+          <h2>Featured in</h2>
+        </div>
         <ul className="movie-grid">
           {actor.movies.map((m: MovieSummary) => (
             <li key={m.id} className="movie-item">

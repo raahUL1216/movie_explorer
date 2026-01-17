@@ -24,13 +24,13 @@ export default function MovieDetail() {
     <div className="container movie-detail-wrapper">
       <header className="movie-header">
         <div className="movie-header-container">
-          <h1>{movie.title}</h1>
+          <h2>{movie.title}</h2>
           <div className="movie-badge">{movie.release_year}</div>
         </div>
         
         <div className="movie-meta">
           <p>
-            <strong>Director: </strong>
+            <strong>by </strong>
             <Link className="director-link" to={`/directors/${movie.director?.id}`}>
               {movie.director?.name}
             </Link>
@@ -45,7 +45,7 @@ export default function MovieDetail() {
 
       <section className="detail-section">
         <h3>Cast</h3>
-        <ul className="movie-grid-container">
+        <ul className="movie-grid">
           {movie.actors.map((a: Entity) => (
             <li key={a.id} className="movie-item">
               <Link to={`/actors/${a?.id}`} className="movie-card-link">

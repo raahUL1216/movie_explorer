@@ -1,59 +1,51 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { describe, it, expect, vi, beforeEach, type Mock } from "vitest";
+import { render, screen, fireEvent, act } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import FilterBar from "../components/FilterBar";
-import { api } from "../api/client";
-import type { Entity } from "../models/movie";
 
-// Mock the API client
-vi.mock("../api/client", () => ({
-  api: { get: vi.fn() }
-}));
-
-describe("FilterBar", () => {
+describe("FilterBar Component", () => {
   const mockOnFilter = vi.fn();
-  const mockData: Entity[] = [{ id: 1, name: "Test Item" }];
+  const mockOnReady = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
-    // Use the Mock type imported from vitest
-    (api.get as Mock).mockResolvedValue({ data: mockData });
+    vi.useFakeTimers();
   });
 
-  it("fetches metadata on mount", async () => {
+  it("calls onReady when the component mounts", () => {
+    render(<FilterBar onFilter={mockOnFilter} onReady={mockOnReady} />);
+    expect(mockOnReady).toHaveBeenCalledTimes(1);
+  });
+
+  it("updates input value on change and debounces the onFilter call", () => {
     render(<FilterBar onFilter={mockOnFilter} />);
-    
-    await waitFor(() => {
-      expect(api.get).toHaveBeenCalledWith("/genres");
-      expect(api.get).toHaveBeenCalledWith("/actors");
-      expect(api.get).toHaveBeenCalledWith("/directors");
+    const input = screen.getByLabelText(/search movies/i) as HTMLInputElement;
+
+    fireEvent.change(input, { target: { value: "Inception" } });
+    expect(input.value).toBe("Inception");
+
+    // Should not be called immediately due to 500ms debounce
+    expect(mockOnFilter).not.toHaveBeenCalled();
+
+    // Fast-forward time
+    act(() => {
+      vi.advanceTimersByTime(500);
     });
+
+    expect(mockOnFilter).toHaveBeenCalledWith("Inception");
   });
 
-  it("triggers onFilter after debounce when selection changes", async () => {
+  it("shows the clear icon only when search is not empty and clears input on click", () => {
     render(<FilterBar onFilter={mockOnFilter} />);
-    
-    const select = await screen.findByDisplayValue("All Genres");
-    fireEvent.change(select, { target: { value: "1" } });
+    const input = screen.getByLabelText(/search movies/i);
 
-    await waitFor(() => {
-      expect(mockOnFilter).toHaveBeenCalledWith(expect.objectContaining({ 
-        genre_id: "1" 
-      }));
-    }, { timeout: 1000 });
-  });
+    expect(screen.queryByLabelText(/clear search/i)).not.toBeInTheDocument();
 
-  it("resets filters when Reset is clicked", async () => {
-    render(<FilterBar onFilter={mockOnFilter} />);
-    const button = screen.getByRole("button", { name: /reset/i });
+    fireEvent.change(input, { target: { value: "Interstellar" } });
     
-    fireEvent.click(button);
-    
-    await waitFor(() => {
-      expect(mockOnFilter).toHaveBeenCalledWith({ 
-        genre_id: '', 
-        actor_id: '', 
-        director_id: '' 
-      });
-    });
+    const clearBtn = screen.getByLabelText(/clear search/i);
+    expect(clearBtn).toBeInTheDocument();
+
+    fireEvent.click(clearBtn);
+    expect((input as HTMLInputElement).value).toBe("");
   });
 });
