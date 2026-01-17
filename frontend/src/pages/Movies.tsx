@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { api } from "../api/client";
-import type { Movie, MovieFilters } from "../models/movie";
+import type { Movie } from "../models/movie";
 import MovieCard from "../components/MovieCard";
 import FilterBar from "../components/FilterBar";
 
@@ -40,7 +40,6 @@ export default function Movies() {
         onFilter={fetchMovies} 
         onReady={handleMetadataReady} 
       />
-      <hr style={{ margin: '20px 0', opacity: 0.1 }} />
       {showLoader ? (
         <div className="loader-wrapper">
           <div className="spinner"></div>
@@ -51,7 +50,7 @@ export default function Movies() {
           {movies.length > 0 ? (
             movies.map(m => <MovieCard key={m.id} movie={m} />)
           ) : (
-            <p className="no-results">No movies found for your selection.</p>
+            <p className="no-results">No movies found.</p>
           )}
         </div>
       )}

@@ -1,4 +1,4 @@
-# FilmFlux
+# MovieScout
 Explore movies by genre, actors, directors
 
 ## Prerequisites

@@ -37,6 +37,9 @@ export default function DirectorProfile() {
       </header>
 
       <section className="movie-list-section">
+        <div className="movie-list-title">
+          <h2>Directed</h2>
+        </div>
         <ul className="movie-grid">
           {director.movies.map((m: MovieSummary) => (
             <li key={m.id} className="movie-item">

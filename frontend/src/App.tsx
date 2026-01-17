@@ -11,7 +11,7 @@ export default function App() {
       <header className="main-header">
         <div className="header-container">
           <Link to="/" className="logo-link">
-            <h1>🎬 FilmFlux</h1>
+            <h1>🎬MovieScout</h1>
           </Link>
           <div className="home-button-container">
             <Link to="/">
@@ -19,7 +19,6 @@ export default function App() {
             </Link>
           </div>
         </div>
-        
       </header>
 
       <main>

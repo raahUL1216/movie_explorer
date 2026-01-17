@@ -1,29 +1,52 @@
 .filters {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-
   margin-bottom: 30px;
 }
 
-.filters select {
-  font-size: 16px;
-  font-weight: 600;
-  padding: 16px 10px;
-  border-radius: 5px;
-  color: white;
+.search-input, .search-input-wrapper {
+  background: #f7f1f1;
+}
+
+.search-input-wrapper {
+  align-items: center;
+  border: 1px solid var(--element-border);
+  border-radius: 7px;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  margin-left: var(--space-around);
+  padding: .5rem;
+  width: min(480px, 87vw);
+}
+
+.search-input-wrapper svg {
+  margin: 0 7px;
+}
+
+.clear-input-icon, .search-input, .search-input-icon {
+  color: #515255;
+  font-size: 26px;
+}
+
+.search-input {
   border: none;
-  
-  min-width: 200px;
+  color: #000;
+  font-weight: 300;
+  margin: 0 .5rem;
+  padding: 6px 0px;
+  outline: none;
+  width: 100%;
+
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+}
 
-  background: linear-gradient(113deg, #065865e6, #704b87 100%);
-  }
+.search-input::placeholder {
+  color: #515255;
 
-.filters select option {
-  background-color: #065865
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .filters button {
@@ -78,6 +101,7 @@
 }
 
 .no-results {
+  font-size: 22px;
   text-align: center;
   grid-column: 1 / -1;
   padding: 40px;
