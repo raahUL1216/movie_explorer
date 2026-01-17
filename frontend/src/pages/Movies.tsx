@@ -9,16 +9,13 @@ export default function Movies() {
   const [isLoadingMovies, setIsLoadingMovies] = useState(true);
   const [isMetadataReady, setIsMetadataReady] = useState(false);
 
-  const fetchMovies = useCallback(async (filters: Partial<MovieFilters> = {}) => {
+  const fetchMovies = useCallback(async (searchTerm?: string) => {
     setIsLoadingMovies(true);
-    
-    // Filter out empty strings from query params
-    const updatedFilters = Object.fromEntries(
-      Object.entries(filters).filter(([, value]) => value !== '')
-    );
 
     try {
-      const res = await api.get<Movie[]>("/movies", { params: updatedFilters });
+      const res = await api.get<Movie[]>("/movies", {
+        params: searchTerm ? { searchTerm } : undefined
+      });
       setMovies(res.data);
     } catch (err) {
       console.error("Failed to fetch movies", err);

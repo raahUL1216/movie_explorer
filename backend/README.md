@@ -3,8 +3,10 @@
 
 #### Run data migrations
 > poetry run alembic revision --autogenerate -m "create movie explorer tables"
+
 > poetry run alembic upgrade head
 
 ### Launch backend server
 > poetry install 
+
 > poetry run python -m app.main

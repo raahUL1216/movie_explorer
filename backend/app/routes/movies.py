@@ -1,30 +1,38 @@
 from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy import or_
 from sqlalchemy.orm import Session, joinedload
 
 from app.database.db import get_db
 
-from app.models.movie import Actor, Genre, Movie
+from app.models.movie import Actor, Genre, Movie, Director
 from app.schemas.movie import MovieDetailOut, MovieOut
 
 router = APIRouter(prefix="/movies", tags=["Movies"])
 
 @router.get("/", response_model=list[MovieOut])
 def list_movies(
-    genre_id: int | None = None,
-    actor_id: int | None = None,
-    director_id: int | None = None,
+    searchTerm: str | None = None,
     db: Session = Depends(get_db)
 ):
-    query = db.query(Movie)
+    query = (
+        db.query(Movie)
+        .outerjoin(Movie.genres)
+        .outerjoin(Movie.actors)
+        .outerjoin(Movie.director)
+    )
 
-    if genre_id:
-        query = query.join(Movie.genres).filter(Genre.id == genre_id)
-
-    if actor_id:
-        query = query.join(Movie.actors).filter(Actor.id == actor_id)
-
-    if director_id:
-        query = query.filter(Movie.director_id == director_id)
+    print(searchTerm)
+    if searchTerm:
+        term = f"%{searchTerm.strip()}%"
+        query = query.filter(
+            or_(
+                Movie.title.ilike(term),
+                Genre.name.ilike(term),
+                Actor.name.ilike(term),
+                Director.name.ilike(term),
+            )
+        )
+        print(query)
 
     return query.distinct().all()
 

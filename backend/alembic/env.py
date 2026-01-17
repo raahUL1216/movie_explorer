@@ -17,7 +17,6 @@ load_dotenv()
 # access to the values within the .ini file in use.
 config = context.config
 
-print(f"postgresql+psycopg2://{os.getenv('DATABASE_USER')}:{os.getenv('DATABASE_PASS')}@{os.getenv('DATABASE_URL')}/{os.getenv('DATABASE_NAME')}?sslmode=require")
 config.set_main_option(
     "sqlalchemy.url",
     f"postgresql+psycopg2://{os.getenv('DATABASE_USER')}:{os.getenv('DATABASE_PASS')}@{os.getenv('DATABASE_URL')}/{os.getenv('DATABASE_NAME')}?sslmode=require"
