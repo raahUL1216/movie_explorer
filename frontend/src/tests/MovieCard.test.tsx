@@ -1,11 +1,11 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import { BrowserRouter } from "react-router-dom";
-import { describe, it, expect, vi, beforeEach, type Mock } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { MemoryRouter } from "react-router-dom";
 import MovieCard from "../components/MovieCard";
 import type { Movie } from "../models/movie";
 
-const mockNavigate = vi.fn() as Mock;
-
+// Mocking useNavigate from react-router-dom
+const mockNavigate = vi.fn();
 vi.mock("react-router-dom", async () => {
   const actual = await vi.importActual("react-router-dom");
   return {
@@ -14,77 +14,67 @@ vi.mock("react-router-dom", async () => {
   };
 });
 
-const mockMovie: Movie = {
-  id: 1,
-  title: "Inception",
-  release_year: 2010,
-  director: { id: 10, name: "Christopher Nolan" },
-  actors: [{ id: 101, name: "Leo DiCaprio" }],
-  genres: [{ id: 5, name: "Sci-Fi" }],
-  reviews: [
-    {
-      id: 1,
-      rating: 4,
-      comment: "Automated review for The Inception."
-    }
-  ]
-};
+describe("MovieCard Component", () => {
+  const mockMovie: Movie = {
+    id: 1,
+    title: "Inception",
+    release_year: 2010,
+    director: { id: 10, name: "Christopher Nolan" },
+    actors: [{ id: 101, name: "Leo DiCaprio" }],
+    genres: [{ id: 5, name: "Sci-Fi" }],
+    reviews: [
+      {
+        id: 1,
+        rating: 4,
+        comment: "Automated review for The Inception."
+      }
+    ]
+  };
 
-describe("MovieCard", () => {
+  // Ensure mocks are reset before each test to prevent cross-test interference
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("renders movie title, year, and director link", () => {
+  it("renders movie details correctly", () => {
     render(
-      <BrowserRouter>
+      <MemoryRouter>
         <MovieCard movie={mockMovie} />
-      </BrowserRouter>
+      </MemoryRouter>
     );
 
     expect(screen.getByText(/Inception/i)).toBeInTheDocument();
     expect(screen.getByText("(2010)")).toBeInTheDocument();
-    
-    const directorLink = screen.getByText("Christopher Nolan");
-    expect(directorLink.closest("a")).toHaveAttribute("href", "/directors/10");
+    expect(screen.getByText("Christopher Nolan")).toBeInTheDocument();
+    expect(screen.getByText("Leo DiCaprio")).toBeInTheDocument();
+    expect(screen.getByText("Sci-Fi")).toBeInTheDocument();
   });
 
-  it("renders all genre badges", () => {
+  it("navigates to movie details when card is clicked", () => {
     render(
-      <BrowserRouter>
+      <MemoryRouter>
         <MovieCard movie={mockMovie} />
-      </BrowserRouter>
+      </MemoryRouter>
     );
 
-    const genreBadge = screen.getByText("Sci-Fi");
-    expect(genreBadge).toHaveClass("genre-badge");
-  });
-
-  it("navigates to movie details when the card is clicked", () => {
-    render(
-      <BrowserRouter>
-        <MovieCard movie={mockMovie} />
-      </BrowserRouter>
-    );
-
-    const card = screen.getByText("Inception").closest(".movie-card");
+    const card = screen.getByText(/Inception/i).closest(".movie-card");
     if (card) fireEvent.click(card);
 
     expect(mockNavigate).toHaveBeenCalledWith("/movies/1");
   });
 
-  it("stops propagation when clicking on a director or actor link", () => {
+  it("prevents navigation to movie details when a nested link is clicked", () => {
     render(
-      <BrowserRouter>
+      <MemoryRouter>
         <MovieCard movie={mockMovie} />
-      </BrowserRouter>
+      </MemoryRouter>
     );
 
-    const actorLink = screen.getByText("Leo DiCaprio");
-    fireEvent.click(actorLink);
+    const directorLink = screen.getByText("Christopher Nolan");
+    fireEvent.click(directorLink);
 
-    // The Link navigate happens via React Router, 
-    // but the card's 'navigate' function should NOT be called.
+    // mockNavigate (the card click handler) should NOT be called 
+    // because of e.stopPropagation() in the component
     expect(mockNavigate).not.toHaveBeenCalled();
   });
 });

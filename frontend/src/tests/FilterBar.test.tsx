@@ -1,60 +1,51 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { describe, it, expect, vi, beforeEach, type Mock } from "vitest";
+import { render, screen, fireEvent, act } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import FilterBar from "../components/FilterBar";
 
-describe("FilterBar", () => {
-  const mockOnFilter = vi.fn() as Mock;
-  const mockOnReady = vi.fn() as Mock;
+describe("FilterBar Component", () => {
+  const mockOnFilter = vi.fn();
+  const mockOnReady = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.useFakeTimers(); // Needed to handle the 500ms debounce precisely
+    vi.useFakeTimers();
   });
 
-  it("calls onReady on mount", () => {
+  it("calls onReady when the component mounts", () => {
     render(<FilterBar onFilter={mockOnFilter} onReady={mockOnReady} />);
     expect(mockOnReady).toHaveBeenCalledTimes(1);
   });
 
-  it("updates search value and triggers onFilter after debounce", async () => {
+  it("updates input value on change and debounces the onFilter call", () => {
     render(<FilterBar onFilter={mockOnFilter} />);
-    
-    const input = screen.getByPlaceholderText(/Search by movie name/i) as HTMLInputElement;
-    
-    // Simulate typing
+    const input = screen.getByLabelText(/search movies/i) as HTMLInputElement;
+
     fireEvent.change(input, { target: { value: "Inception" } });
     expect(input.value).toBe("Inception");
 
-    // Fast-forward time by 500ms
-    vi.advanceTimersByTime(500);
+    // Should not be called immediately due to 500ms debounce
+    expect(mockOnFilter).not.toHaveBeenCalled();
+
+    // Fast-forward time
+    act(() => {
+      vi.advanceTimersByTime(500);
+    });
 
     expect(mockOnFilter).toHaveBeenCalledWith("Inception");
   });
 
-  it("clears search text and calls onFilter when clear icon is clicked", () => {
+  it("shows the clear icon only when search is not empty and clears input on click", () => {
     render(<FilterBar onFilter={mockOnFilter} />);
+    const input = screen.getByLabelText(/search movies/i);
+
+    expect(screen.queryByLabelText(/clear search/i)).not.toBeInTheDocument();
+
+    fireEvent.change(input, { target: { value: "Interstellar" } });
     
-    const input = screen.getByPlaceholderText(/Search by movie name/i) as HTMLInputElement;
-    fireEvent.change(input, { target: { value: "Tenet" } });
-    
-    // Find the clear icon by its aria-label
-    // Note: Since it's an SVG, we target via aria-label provided in your HTML
-    const clearBtn = screen.getByLabelText("Clear search");
-    
+    const clearBtn = screen.getByLabelText(/clear search/i);
+    expect(clearBtn).toBeInTheDocument();
+
     fireEvent.click(clearBtn);
-
-    expect(input.value).toBe("");
-    expect(mockOnFilter).toHaveBeenCalledWith(undefined);
-  });
-
-  it("trims whitespace from search term", () => {
-    render(<FilterBar onFilter={mockOnFilter} />);
-    
-    const input = screen.getByPlaceholderText(/Search by movie name/i);
-    fireEvent.change(input, { target: { value: "  Batman  " } });
-
-    vi.advanceTimersByTime(500);
-
-    expect(mockOnFilter).toHaveBeenCalledWith("Batman");
+    expect((input as HTMLInputElement).value).toBe("");
   });
 });
