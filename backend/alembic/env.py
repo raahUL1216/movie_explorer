@@ -1,3 +1,4 @@
+import os
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
@@ -8,9 +9,19 @@ from alembic import context
 from app.database.db import Base
 from app.models import movie
 
+# load env variables
+from dotenv import load_dotenv
+load_dotenv()
+
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
+
+print(f"postgresql+psycopg2://{os.getenv('DATABASE_USER')}:{os.getenv('DATABASE_PASS')}@{os.getenv('DATABASE_URL')}/{os.getenv('DATABASE_NAME')}?sslmode=require")
+config.set_main_option(
+    "sqlalchemy.url",
+    f"postgresql+psycopg2://{os.getenv('DATABASE_USER')}:{os.getenv('DATABASE_PASS')}@{os.getenv('DATABASE_URL')}/{os.getenv('DATABASE_NAME')}?sslmode=require"
+)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.

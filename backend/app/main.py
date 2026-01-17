@@ -3,8 +3,13 @@ from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
+# load env variables
+from dotenv import load_dotenv
+load_dotenv()
+
 from app.database.db import get_db
 from app.routes import movies, actors, genres, directors
+
 
 app = FastAPI(
     title="Movie Explorer API",
