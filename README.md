@@ -15,5 +15,5 @@ Explore movies by genre, actors, directors
 
 > docker compose up
 
-### [Launch FilmFlux](http://localhost:3000)
+### [Launch MovieScout](http://localhost:3000)
 ### [API Docs](http://localhost:8000/docs)
